@@ -1,0 +1,30 @@
+.search-bar {
+  background-color: slateblue;
+}
+
+.search-form {
+  display: flex;
+  padding: 10px 10px;
+}
+
+.search-form__input {
+  display: block;
+  margin-right: 5px;
+
+  color: white;
+  background-color: black;
+  border-color: currentColor;
+  border-radius: 4px;
+}
+
+.search-form__input::placeholder {
+  color: white;
+}
+
+.search-form__btn {
+  margin: 0;
+
+  color: white;
+  background-color: black;
+  border-color: currentColor;
+}
