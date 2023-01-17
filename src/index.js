@@ -8,15 +8,15 @@ const loadMoreBtn = document.querySelector('.js-load-more');
 const observerGuard = document.querySelector(".js-guard");
 const infinityCheckBox = document.querySelector('.js-allow-infinity');
 const checkBoxLabel = document.querySelector('.js-allow-infinity-label');
+let page = 1;
+let pages = 1;
+let previousSearchValue = '';
+let isInfinityLoad = null;
 const intersectionObserverOptions = {
     root: null,
     rootMargin: '500px',
     threshold: 1.0,
 };
-let page = 1;
-let pages = 1;
-let previousSearchValue = '';
-let isInfinityLoad = null;
 const intersectionObserver = new IntersectionObserver(handleIntersection, intersectionObserverOptions);
 hideCheckBox();
 
@@ -29,16 +29,14 @@ function onFormSubmit(evt) {
     const currentSearchRequest = evt.target.elements.searchQuery.value.trim();
     const isPreviusValue = previousSearchValue !== '' && previousSearchValue !== currentSearchRequest;
     
-    if(isPreviusValue) {
-        page = 1;
-        gallery.innerHTML = '';
-        // intersectionObserver.unobserve(observerGuard);
-    } else if (!currentSearchRequest) {
+    if (isPreviusValue) {
+        resetGallery();
+    };
+    if (!currentSearchRequest) {
         return Notify.failure('Enter your request, please.');
     };
     previousSearchValue = currentSearchRequest;
     renderGalleryItems(currentSearchRequest, page);
-    showCheckBox();
     incrementPage();
 };
 
@@ -52,33 +50,33 @@ function handleIntersection(entries, observer) {
      entries.forEach(entry => {
     if (entry.isIntersecting && previousSearchValue)  onLoadMore();
     if (pages < page) {
-      observer.unobserve(observerGuard);
+        observer.unobserve(observerGuard);
     }
   });
- };
+};
 
 async function renderGalleryItems(searchRequest, searchPage) {
     try {
         const response = await getImages(searchRequest, searchPage);
         const arrayOfImages = response.data.hits;
         const foundImagesQty = response.data.totalHits;
-        pages = Math.round(response.data.total / foundImagesQty);
+        const totalFoundImages = response.data.total;
+        pages = Math.round(totalFoundImages / foundImagesQty);
 
-        if (!foundImagesQty) {
+        if (!totalFoundImages) {
             return Notify.info('Sorry, there are no images matching your search query. Please try again.');
         };
         if (!arrayOfImages.length) {
-            loadMoreBtn.classList.add('hide');
-            hideCheckBox();
-            return Notify.failure("We're sorry, but you've reached the end of search results.");
+           return Notify.failure("We're sorry, but you've reached the end of search results.");
         };
         if (page - 1 === 1) {
-            Notify.success(`Hooray! We found ${foundImagesQty} images.`)
+           Notify.success(`Hooray! We found ${foundImagesQty} images.`);
         };
-        loadMoreBtn.classList.replace('hide', 'show');
         createGalleryItemsMarkup(arrayOfImages, gallery);
+        loadMoreBtn.classList.replace('hide', 'show');
+        showCheckBox();
     } catch (error) {
-        Notify.failure(error.message);   
+        console.error(error.stack);  
     };
 };
 
@@ -86,20 +84,26 @@ function incrementPage() {
     return page += 1;
 };
 
+function resetGallery() {
+    page = 1;
+    gallery.innerHTML = '';
+    infinityCheckBox.checked = false;
+    intersectionObserver.unobserve(observerGuard);
+};
+
 function hideCheckBox() {
     infinityCheckBox.hidden = true;
-checkBoxLabel.hidden = true;
+    checkBoxLabel.hidden = true;
 };
 
 function showCheckBox() {
     infinityCheckBox.hidden = false;
-checkBoxLabel.hidden = false;
+    checkBoxLabel.hidden = false;
 };
 
 function setInfinityLoad(event) {
   isInfinityLoad = event.currentTarget.checked;
   isInfinityLoad
     ? intersectionObserver.observe(observerGuard)
-    : intersectionObserver.unobserve(observerGuard);
-  if (pages > page && !isInfinityLoad) loadMoreBtn.classList.replace('hide', 'show');
+        : intersectionObserver.unobserve(observerGuard);
 };

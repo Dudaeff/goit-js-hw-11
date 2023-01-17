@@ -44,14 +44,14 @@
   border-radius: 3px;
 
   transition: background-color 250ms linear;
-}
 
-.search-form__input::placeholder {
-  color: snow;
-}
+  &:focus {
+    background-color: black;
+  }
 
-.search-form__input:focus {
-  background-color: black;
+  &::placeholder {
+    color: snow;
+  }
 }
 
 .search-form__btn {
@@ -70,8 +70,8 @@
 
   transition: background-color 250ms linear, color 250ms linear;
 
-  :hover,
-  :active {
+  &:hover,
+  &:active {
     color: black;
     background-color: snow;
   }

@@ -17,6 +17,7 @@ async function getImages(request, page = 1) {
         return await axios.get(url, { params });
     } catch (error) {
         Notify.failure(error.message);
+        return error.message;
     }
 };
 
