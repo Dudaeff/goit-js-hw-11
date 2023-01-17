@@ -26,7 +26,7 @@
     rgba(236, 255, 29, 1) 25%,
     rgba(253, 29, 29, 1) 70%,
     rgba(0, 0, 0, 1) 83%,
-    rgba(19, 0, 250, 1) 18%
+    rgb(19, 0, 250) 18%
   );
 }
 
@@ -38,4 +38,12 @@
 .load-more.show {
   visibility: visible;
   pointer-events: all;
+}
+
+.load-controls {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  row-gap: 5px;
+  margin-top: 5px;
 }

@@ -1,7 +1,10 @@
 .search-bar {
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
   z-index: 777;
-  margin-bottom: 4px;
+  width: 100%;
+  height: 50px;
 
   background: rgb(19, 0, 250);
   background: linear-gradient(
@@ -66,10 +69,10 @@
   border-radius: 3px;
 
   transition: background-color 250ms linear, color 250ms linear;
-}
 
-.search-form__btn:hover,
-.search-form__btn:active {
-  color: black;
-  background-color: snow;
+  :hover,
+  :active {
+    color: black;
+    background-color: snow;
+  }
 }
